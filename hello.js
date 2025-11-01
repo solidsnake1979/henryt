@@ -1,10 +1,13 @@
+
 const prompt=require("prompt-sync")();
 
-const pi=3.14;
+let n1=Number(prompt("Enter first Number :"));
+let n2=Number(prompt("Enter second Number :"));
+let n3=Number(prompt("Enter third Number :"));
+let n4=Number(prompt("Enter fourth Number :"));
 
-const radius=Number(prompt("Enter the radius of the circle :"));
+let sum=0;
+sum=n1+n2+n3+n4;
+let avg=sum/4;
 
-let area=0;
- area=pi*radius*radius;
-
- console.log(area.toFixed(2));
+console.log(avg);
