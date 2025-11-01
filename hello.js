@@ -1,13 +1,36 @@
+let score=80;
 
-const prompt=require("prompt-sync")();
+if(score>=90){
+    console.log("A");
+}
+else if(score>=80){
+    console.log("B");
+}
+else if(score>=70){
+    console.log("C");
+}
+else if(score>=60){
+    console.log("D");
+}
+else if(score<60){
+    console.log("F");
+}
 
-let n1=Number(prompt("Enter first Number :"));
-let n2=Number(prompt("Enter second Number :"));
-let n3=Number(prompt("Enter third Number :"));
-let n4=Number(prompt("Enter fourth Number :"));
 
-let sum=0;
-sum=n1+n2+n3+n4;
-let avg=sum/4;
-
-console.log(avg);
+switch(true){
+    case score>=90:
+        console.log("A");
+        break;
+         case  score>=80:
+        console.log("B");
+        break;
+         case score>=70:
+        console.log("C");
+        break;
+         case score>60:
+        console.log("D");
+        break;
+        default:
+        console.log("F");
+        break;
+}
