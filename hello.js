@@ -1,21 +1,10 @@
+const prompt=require("prompt-sync")();
 
-const add=(num1,num2)=>{
-    console.log(num1+num2);
-}
-add(2,3);
+const pi=3.14;
 
-const sub=(num1,num2)=>{
-    console.log(num1-num2);
-}
-sub(7,4);
+const radius=Number(prompt("Enter the radius of the circle :"));
 
-const mul=(num1,num2)=>{
-    console.log(num1*num2);
-}
-mul(4,5);
+let area=0;
+ area=pi*radius*radius;
 
-const div=(num1,num2)=>{
-    console.log(num1/num2);
-}
-
-div(10,2);
+ console.log(area.toFixed(2));
