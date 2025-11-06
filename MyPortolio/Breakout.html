@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breakout</title>
+    <style>
+      body {
+
+        text-align: center;
+
+        font-family: "Courier New", Courier, monospace;
+      }
+      canvas {
+        background-color:cadetblue;
+        border-top: 3px solid skyblue;
+        border-left: 3px solid skyblue;
+        border-right: 3px solid skyblue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Breakout</h1>
+    <p>Press the left and right arrow keys to play the game.</p>
+    <canvas id="board"></canvas>
+
+    <script>
+      "use strict";
+
+      let board;
+      let boardWidth = 400;
+      let boardHeight = 400;
+      let context;
+      let playerWidth = 80;
+      let playerHeight = 10;
+
+      let blockArray = [];
+      let blockWidth = 45;
+      let blockHeight = 10;
+      let blockCols = 7;
+      let blockRows = 3;
+      let blockMaxRows = 10;
+      let blockCount = 0;
+
+      let blockX = 15;
+      let blockY = 45;
+      let gameOver = false;
+      let score = 0;
+
+      let player = {
+        x: boardWidth / 2 - playerWidth / 2,
+        y: boardHeight - playerHeight - 10,
+        width: playerWidth,
+        height: playerHeight,
+        pressLeft: false,
+        pressRight: false,
+      };
+      let ball = {
+        x: boardWidth / 2,
+        y: boardHeight / 2,
+        radius: 7,
+        dx: 3,
+        dy: 2,
+      };
+
+      window.onload = function () {
+        board = document.getElementById("board");
+        board.width = boardWidth;
+        board.height = boardHeight;
+        context = board.getContext("2d");
+        document.addEventListener("keyup", movePlayer);
+        requestAnimationFrame(update);
+        createBlocks();
+      };
+
+      function testCollision(player, ball) {
+        return (
+          player.x < ball.x + 2 * ball.radius &&
+          ball.x < player.x + player.width &&
+          player.y < ball.y + 2 * ball.radius &&
+          ball.y < player.y + player.height
+        );
+      }
+      function testCollisionBlock(block, ball) {
+        return (
+          block.x < ball.x + 2 * ball.radius &&
+          ball.x < block.x + block.width &&
+          block.y < ball.y + 2 * ball.radius &&
+          ball.y < block.y + block.height
+        );
+      }
+
+      function update() {
+        requestAnimationFrame(update);
+
+        if (gameOver) {
+          return;
+        }
+
+        context.clearRect(0, 0, board.width, board.height);
+
+        context.fillStyle = "skyblue";
+        for (let i = 0; i < blockArray.length; i++) {
+          let block = blockArray[i];
+          if (!block.break) {
+            if (testCollisionBlock(block, ball)) {
+              block.break = true;
+              ball.dy = -ball.dy;
+              blockCount -= 1;
+              score += 100;
+            }
+          
+
+          context.fillRect(block.x, block.y, block.width, block.height);
+        }
+        if(block*100){
+          alert("You win");
+        }
+      }
+        context.fillStyle = "lightgreen";
+        context.fillRect(player.x, player.y, player.width, player.height);
+
+        if (player.pressLeft && player.x > 0) {
+          player.x -= 5;
+        } else if (player.pressRight && player.x < board.width - player.width) {
+          player.x += 5;
+        }
+        context.fillStyle = "blue";
+        context.beginPath();
+        context.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
+        context.fill();
+        context.closePath();
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+
+        if (ball.x < 0 || ball.x > board.width) {
+          ball.dx = -ball.dx;
+        }
+        if (ball.y < 0) {
+          ball.dy = -ball.dy;
+        }
+        if (ball.y > board.height) {
+          context.font = "20px Carabri";
+          context.fillText("Game Over. Press Space to continue.", 60, 360);
+          gameOver = true;
+        }
+
+        if (testCollision(player, ball)) {
+          ball.dy = -ball.dy;
+        }
+        context.font = "18px Carabri";
+        context.fillText(score, 10, 30);
+      }
+
+      function movePlayer(ev) {
+        if (gameOver) {
+          if (ev.code === "Space") {
+            reset();
+          }
+        }
+        if (ev.code === "ArrowLeft") {
+          player.pressLeft = true;
+          player.pressRight = false;
+        } else if (ev.code === "ArrowRight") {
+          player.pressRight = true;
+          player.pressLeft = false;
+        }
+      }
+      function createBlocks() {
+        blockArray = [];
+        for (let c = 0; c < blockCols; c++) {
+          for (let r = 0; r < blockRows; r++) {
+            let block = {
+              x: blockX + c * blockWidth + c * 10,
+              y: blockY + r * blockHeight + r * 10,
+              width: blockWidth,
+              height: blockHeight,
+              break: false,
+            };
+            blockArray.push(block);
+          }
+        }
+        blockCount = blockArray.length;
+      }
+      function reset() {
+        gameOver = false;
+        player = {
+          x: boardWidth / 2 - playerWidth / 2,
+          y: boardHeight - playerHeight - 10,
+          width: playerWidth,
+          height: playerHeight,
+          pressLeft: false,
+          pressRight: false,
+        };
+        ball = {
+          x: boardWidth / 2,
+          y: boardHeight / 2,
+          radius: 7,
+          dx: 3,
+          dy: 2,
+        };
+        blockArray = [];
+        score = 0;
+        createBlocks();
+      }
+    </script>
+  </body>
+</html>

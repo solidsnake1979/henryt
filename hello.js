@@ -1,11 +1,19 @@
 
-let arr=[4,2,8,6];
+let momobae={
+    Name:"Momobae",
+    Speciality:"K-Pop",
+    Power:49,
+    Hitpoints:28,
+    Level:7,
+    Gender:"Female",
+    calMaxPower(){
+       return this.Name;
+    }
 
-let product=0;
-
-for(let i=0;i<arr.length;i++){
-    product*=arr[i];
-    return product;
-    
 }
-console.log(product);
+
+console.log(momobae.calMaxPower);
+
+
+
+    
