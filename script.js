@@ -23,4 +23,4 @@ const fetchData = async () => {
   }
 };
 
-fetchData();
+
