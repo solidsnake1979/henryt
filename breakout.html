@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breakout</title>
+    <style>
+      *,
+      body {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+      canvas {
+        background-color: black;
+        color: white;
+        border-top: 3px solid blue;
+        border-left: 3px solid blue;
+        border-right: 3px solid blue;
+      }
+    </style>
+  </head>
+  <body>
+    <br />
+    <h1>Breakout</h1>
+    <br />
+    <p>Press left and right direction keys to play the game.</p>
+    <br />
+    <canvas id="board"></canvas>
+
+    <script>
+      let board;
+      let context;
+      const boardWidth = 400;
+      const boardHeight = 400;
+      let playerWidth = 80;
+      let playerHeight = 10;
+      let blockArray = [];
+      let col=7;
+      let row=4;
+      let blockWidth=45;
+      let blockHeight=10;
+      let blockX=10
+      let blockY=30;
+      let score=0;
+      let gameOver=false;
+
+      let player = {
+        x: boardWidth / 2 - playerWidth / 2,
+        y: boardHeight - playerHeight - 10,
+        width: playerWidth,
+        height: playerHeight,
+        pressLeft:false,
+        pressRight:false
+      };
+      let ball = {
+        x: boardWidth / 2,
+        y: boardHeight / 2,
+        radius: 7,
+        dx: 3,
+        dy: 3,
+      };
+
+      window.onload = () => {
+        board = document.getElementById("board");
+        context = board.getContext("2d");
+        board.width = boardWidth;
+        board.height = boardHeight;
+        document.addEventListener("keyup",changeDirection);
+        requestAnimationFrame(update);
+        createBlocks();
+      };
+
+      const update = () => {
+        requestAnimationFrame(update);
+        if(gameOver){
+          return;
+        }
+        context.clearRect(0, 0, board.width, board.height);
+        //draw blocks
+        context.fillStyle="skyblue";
+        for(let i=0;i<blockArray.length;i++){
+            block=blockArray[i];
+            if(!block.break){
+            if(testCollisionBlock(ball,block)){
+                block.break=true;
+                ball.dy=-ball.dy
+                score+=100;
+
+
+            }
+             context.fillRect(block.x,block.y,block.width,block.height);
+
+            }
+        
+       
+        }
+        //test collision player and ball
+        if(testCollisionPlayer(player,ball)){
+          ball.dy=-ball.dy;
+        }
+        //draw player
+        context.fillStyle = "red";
+        context.fillRect(player.x, player.y, player.width, player.height);
+
+        //draw ball
+        context.fillStyle = "lightgreen";
+        context.beginPath();
+        context.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
+        context.fill();
+        context.closePath();
+
+        //animate ball
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+
+        //move player
+        if(player.pressLeft&& player.x>0){
+          player.x-=5;
+        }
+        if(player.pressRight&&player.x<board.width-player.width){
+          player.x+=5;
+        }
+
+        //testCollision
+        if (ball.x < 0 || ball.x > board.width) {
+          ball.dx = -ball.dx;
+        }
+        if (ball.y < 0 || ball.y > board.height) {
+          ball.dy = -ball.dy;
+        }
+
+        context.fillStyle="white";
+        context.font="20px Calabri"
+        context.fillText("Score :"+score,10,20);
+      };
+      const createBlocks=()=>{
+        blockArray=[];
+        for(let i=0;i<row;i++){
+            for(let j=0;j<col;j++){
+                let block={
+                    x:blockX+j*blockWidth+j*10,
+                    y:blockY+i*blockHeight+i*10,
+                    width:blockWidth,
+                    height:blockHeight,
+                    break:false
+                }
+                blockArray.push(block);
+            }
+            
+        }
+      }
+      const changeDirection=(ev)=>{
+        if(ev.code==="ArrowLeft"){
+          player.pressLeft=true;
+          player.pressRight=false;
+        }
+         else if(ev.code==="ArrowRight"){
+          player.pressLeft=false;
+          player.pressRight=true;
+        }
+      }
+      const testCollisionBlock=(ball,block)=>{
+        return((ball.x<block.x+block.width)&&
+                (ball.y<block.y+block.height)&&
+                (block.x<ball.x+2*ball.radius)&&
+                (block.y<ball.y+2*ball.radius))
+      }
+      const testCollisionPlayer=()=>{
+        return((ball.x<player.x+player.width)&&
+                (ball.y<player.y+player.height)&&
+                (player.x<ball.x+2*ball.radius)&&
+                (player.y<ball.y+2*ball.radius))
+      }
+    </script>
+  </body>
+</html>
